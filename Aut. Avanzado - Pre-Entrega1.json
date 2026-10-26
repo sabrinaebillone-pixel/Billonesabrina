@@ -1,0 +1,256 @@
+{
+  "name": "Aut. Avanzado - Pre-Entrega1",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        176,
+        240
+      ],
+      "id": "847ac657-0508-4d1e-9d7e-228a5e141f24",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "rO8iNS3LDCZlsdUY",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.Subject }}{{ $json.snippet }}",
+        "options": {
+          "systemMessage": "[ROL Y ÁMBITO]\nSos un Agente de Triaje de Soporte Técnico para una empresa SaaS B2B. Tu único ámbito es interpretar mensajes desestructurados de usuarios, identificar el problema principal, clasificar la prioridad y registrar un ticket limpio para que el equipo de soporte pueda actuar.\n\nNO tenés autorización para: prometer tiempos de resolución, cerrar tickets, otorgar compensaciones, modificar datos productivos, borrar registros, ejecutar acciones destructivas, brindar asesoramiento legal o comprometer decisiones comerciales.\n\n[OBJETIVO OPERATIVO]\nConvertir cada consulta entrante en un registro estructurado con: nombre del usuario, contacto, empresa, categoría del problema, prioridad, resumen del caso y próxima acción recomendada.\n\n[REGLAS DE USO DE HERRAMIENTAS]\n- Usá la herramienta \"Registro_soporte\" SOLO cuando tengas datos mínimos suficientes: contacto del usuario, categoría del problema y descripción del inconveniente.\n- Si falta un dato clave, hacé una única pregunta clara antes de registrar.\n- No inventes información. Si un dato no fue provisto, dejalo vacío o marcá \"No informado\".\n- Clasificá la prioridad como Alta, Media o Baja. Alta aplica si hay bloqueo total, impacto en facturación, caída de servicio, pérdida de datos o cliente estratégico.\n- Si el mensaje mezcla varios problemas, priorizá el problema de mayor impacto y dejá el resto en notas.\n\n[PROTOCOLO DE ESCALAMIENTO / GUARDRAILS]\n- Si el usuario reporta pérdida de datos, caída generalizada, incidente de seguridad, cliente VIP o amenaza de baja, marcá prioridad Alta y recomendá revisión humana inmediata.\n- Si el usuario pide una acción destructiva o sensible, detené el ciclo y respondé: \"El caso requiere revisión humana antes de ejecutar acciones sensibles.\"\n- No envíes correos ni mensajes externos al cliente final. Solo registrá el ticket y generá un resumen operativo.\n\n[ESTILO]\n- Escribí en español rioplatense estándar, claro y profesional.\n- No uses lenguaje inclusivo con terminaciones en -e, -x o @.\n- Sé breve, específico y orientado a la operación.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "b5a57e4d-6fa3-4b6c-9e29-4fab565237eb",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Registro de soporte",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1n1mIkjVfA-wMuc_FJJOL8T9WjiujMe2JyC_0t84RYFA",
+          "mode": "list",
+          "cachedResultName": "Registro_soporte",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n1mIkjVfA-wMuc_FJJOL8T9WjiujMe2JyC_0t84RYFA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1n1mIkjVfA-wMuc_FJJOL8T9WjiujMe2JyC_0t84RYFA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "contacto del usuario": "={{ $('Ingreso de consulta').item.json.From }}",
+            "descripción del inconveniente": "={{ $('Ingreso de consulta').item.json.snippet }}{{ $('Ingreso de consulta').item.json.snippet }}",
+            "categoría del problema": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('categor_a_del_problema', ``, 'string') }}",
+            "prioridad": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('prioridad', ``, 'string') }}",
+            "acción ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('acci_n_', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "contacto del usuario",
+              "displayName": "contacto del usuario",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "descripción del inconveniente",
+              "displayName": "descripción del inconveniente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "categoría del problema",
+              "displayName": "categoría del problema",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "prioridad",
+              "displayName": "prioridad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "acción ",
+              "displayName": "acción ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        400,
+        224
+      ],
+      "id": "aa484bbb-e265-4893-8930-79cf9880ec91",
+      "name": "registro_soporte",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "pQqgQHuBLJL0H7G9",
+          "name": "Google Sheets account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "7217656938",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        544,
+        0
+      ],
+      "id": "1110c23a-077d-40f3-ac97-7a463420b887",
+      "name": "respuesta",
+      "webhookId": "8f205ac0-871e-4653-b89b-ac96bce63ebc",
+      "credentials": {
+        "telegramApi": {
+          "id": "KhKU7aGt0unElAEE",
+          "name": "Telegram account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b2b90f97-fd19-4378-8978-9106efc2a628",
+      "name": "Ingreso de consulta",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "jsie52iQ7mXNAUAh",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "registro_soporte": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "respuesta": {
+      "main": [
+        []
+      ]
+    },
+    "Ingreso de consulta": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "656eb9b1-d6c7-4d29-a71c-d65c92bc46eb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ba80d91cb8c8caba23b6947bbd744ba7d2f7f0e61596c686595de941404cf405"
+  },
+  "nodeGroups": [],
+  "id": "JFiM9D08GugaEJ7W",
+  "tags": []
+}
